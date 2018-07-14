@@ -416,6 +416,37 @@ public class Solution {
         }
         return A;
     }
+    
+    /* Lesson 15 Caterpillar method */
+    /* 15.4 MinAbsSumOfTwo */
+    public int minAbsSumOfTwo(int[] A) {
+        // write your code in Java SE 8
+        int[] a = new int[A.length];
+        for(int i =0;i<A.length;i++){
+            a[i] = A[i];
+        }
+        Arrays.sort(a);
+        int min=Integer.MAX_VALUE;
+        for(int i = 0;i<A.length;i++){
+            int index = Arrays.binarySearch(a, -A[i]); //may not found
+            if(index>=0){
+                return 0;
+            }else{ // index<0
+                int insertpoint = - (index+1);//the index of the first element greater than the key, or a.length if all elements in the array are less than the specified key.
+                if(insertpoint == 0){
+                    //current // no -1
+                    min = Math.min(min, Math.abs(A[i]+a[insertpoint]));
+                } else if(insertpoint == a.length){
+                    //only -1
+                    min = Math.min(min, Math.abs(A[i]+a[insertpoint-1]));
+                } else {
+                    min = Math.min(min, Math.abs(A[i]+a[insertpoint]));
+                    min = Math.min(min, Math.abs(A[i]+a[insertpoint-1]));
+                }
+            }
+        }
+        return min;
+    }
     public static void main(String arg[]){
 //    	System.out.println(solution(12));//
 //    	System.out.println(solution(37));
