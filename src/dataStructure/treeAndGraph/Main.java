@@ -235,7 +235,7 @@ rithm to create a binary search tree with minimal height.*/
 		}
 		return n;
 	}
-	
+		
 	public static void main(String[] args) {
 		
 		/*4.2*/

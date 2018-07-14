@@ -148,6 +148,8 @@ public class Sort {
 	}
 	
 	
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Sort s = new Sort();
@@ -175,14 +177,14 @@ public class Sort {
 //			System.out.print(array2[i]);
 //		}
 		
-		String[] strs = {"abc", "cde", "bca", "xyz", "opq", "yzx"};
-		s.sort(strs);
-		for(int i=0;i<strs.length; i++){
-			System.out.println(strs[i]);
-		}
+//		String[] strs = {"abc", "cde", "bca", "xyz", "opq", "yzx"};
+//		s.sort(strs);
+//		for(int i=0;i<strs.length; i++){
+//			System.out.println(strs[i]);
+//		}
 		
 //		System.out.println(s.sortChars("bca"));
-		
+
 		
 	}
 
