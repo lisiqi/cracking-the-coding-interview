@@ -447,6 +447,123 @@ public class Solution {
         }
         return min;
     }
+    
+    /* Lesson 17 Dynamic Programming*/
+    /* 17.1*/
+    public int maxResult(int[] A) {
+        int[] S = {1,2,3,4,5,6};
+        int N = A.length;
+        int[] dp = new int[N]; // dp[j] stores the max result from 0 to j
+        dp[0] = A[0]; // others are 0 as default //need to set to Integer.MIN_VALUE
+        for(int j = 1;j<N;j++){
+        	dp[j] = Integer.MIN_VALUE;
+        }
+        for(int j=1;j<N;j++){
+        	for(int i=0;i<S.length;i++){
+        		if(j-S[i]>=0){
+        			int sum = 0; // the positive sum between j-S[i] and j
+        			for(int k=j-S[i]+1;k<j;k++){
+        				if(A[k]>0){
+        					sum += A[k];
+        				}
+        			}
+        			dp[j] = Math.max(dp[j], dp[j-S[i]]+sum+A[j]);
+        		}       		
+        	}
+        }
+        return dp[N-1];
+    }
+    /* 17.2 */
+    // invalid answer:
+//    public int minVal(int[] A) {
+//    	int N = A.length;
+//    	if(N==0){
+//    		return 0;
+//    	}
+//        int[] S = new int[N]; // store sum(abs(A))
+//        int[] dp = new int[N]; // dp[j] stores the min Val at j
+//        
+//        int max = Math.abs(A[0]);
+//        dp[0] = Math.abs(A[0]);
+//        S[0] = Math.abs(A[0]);
+//        for(int j = 1;j<N;j++){
+//        	S[j] = S[j-1] + Math.abs(A[j]);
+//        	if(Math.abs(A[j])<max){
+//        		dp[j] = Math.abs(dp[j-1]-Math.abs(A[j]));
+//        	}else{
+//        		max = Math.abs(A[j]);
+//        		int d = Math.abs(Math.abs(A[j])-S[j-1]);
+//        		if(d<S[j-1]){
+//        			int index = Arrays.binarySearch(S,d); //
+//        			if(index >=0){ // found
+//        				dp[j] = 0;
+//        			}else{
+//        				index = -(index+1);
+//        				if(index-1 < 0){
+//        					dp[j] = Math.abs(S[index]-d);
+//        				}else if (index==N){
+//        					dp[j] = Math.abs(S[index-1]-d);
+//        				}else{
+//        					dp[j] = Math.min(Math.abs(S[index]-d), Math.abs(S[index-1]-d));
+//        				}
+//        			}
+//        		}else{
+//        			dp[j] = d;
+//        		}
+//        		
+//        	}
+//        } 
+//        return dp[N-1];
+//    }
+    // solution
+    // https://codility.com/media/train/solution-min-abs-sum.pdf
+    public int minVal(int[] A) {
+    	int N = A.length;
+    	if(N==0){
+    		return 0;
+    	}
+    	int M = 0; // max(abs(A))
+    	for(int i = 0;i<N;i++){
+    		A[i] = Math.abs(A[i]);
+    		M = Math.max(M,A[i]);
+    	}
+    	int[] count = new int[M+1]; // initialized to 0 as default // store frequency of elements
+    	for(int i=0;i<N;i++){
+    		count[A[i]]++;
+    	}
+    	int S = 0; // sum(abs(A))
+    	for(int i = 0;i<N;i++){
+    		S += A[i];
+    	}
+        int[] dp = new int[S+1]; // dp[j] stores how many values a remain after achieving sum j
+        //initialize
+        dp[0] = 0;
+        for(int i = 1;i<dp.length;i++){
+        	dp[i] = -1;
+        }
+        
+        for(int a =1;a<count.length;a++){
+        	if(count[a]>0){
+        		for(int j=0;j<dp.length;j++){
+        			if(dp[j]>=0){
+        				dp[j] = count[a]; // no a is need to obtain the sum j
+        			}else{
+        				if(j>=a && dp[j-a]>0){
+        					dp[j] = dp[j-a]-1;
+        				}
+        			}
+        		}
+        	}
+        }
+        int P = 0; // P <= S/2 <= Q, P+Q=S, result = Q-P = S-2P
+        for(int i = S/2;i>=0;i--){
+        	if(dp[i]>=0){
+        		P = i;
+        		break;
+        	}
+        }
+        return S-2*P;
+    }
     public static void main(String arg[]){
 //    	System.out.println(solution(12));//
 //    	System.out.println(solution(37));
