@@ -564,10 +564,183 @@ public class Solution {
         }
         return S-2*P;
     }
+    
+    //
+    public static int demo(int[] A) {
+        // write your code in Java SE 8
+        int N = A.length;
+        if(N ==1){
+        	if(A[0] !=1) return 1;
+        	else return 2;
+        }
+        //n>=2     
+        Arrays.sort(A);
+        int j = 1;
+        for(int i = 0;i<N;i++){
+            if(A[i]<=0){
+                continue;
+            }
+            // A[i]>0
+            // handle duplicates
+            if(i<N-2){
+	            while(A[i]==A[i+1]){
+	                i++;
+	                if(i==N-2){
+	                	break;
+	                }
+	            }
+            }
+            if(i==N-2 && A[N-2]==A[N-1]){
+            	i++;
+            }
+            if(A[i]==j){
+            	j++;
+            	continue;
+            }
+            else 
+                break;
+        }
+        return j;
+    }
+    public static int solutionT1(int N, String S) {
+    	String[] seats = S.split(" ");
+    	int l = seats.length;
+    	if(S.equals("") || l==0){
+    	    return 3*N;
+    	}
+    	HashMap<Integer, ArrayList<String>> map = new HashMap<Integer, ArrayList<String>>();
+    	for(int i =1;i<=N;i++){
+    		map.put(i, new ArrayList<String>());
+    	}
+    	for(int i = 0; i < l;i++){
+//    		Integer row = new Integer((seats[i].charAt(0)));
+    		if(seats[i].length()>0){	
+    		int r = Integer.parseInt(String.valueOf(seats[i].charAt(0)));
+    		Integer row = new Integer(r);
+//    		System.out.println(seats[i].charAt(0));
+//    		System.out.println(row);
+    		ArrayList<String> nu = map.get(row); 
+    		nu.add(String.valueOf(seats[i].charAt(1))); // check if write back
+//    		map.put(new Integer((seats[i].charAt(0))), String.valueOf(seats[i].charAt(1)));
+    		}
+    	}
+    	int count = 0;
+    	for(int i =1;i<=N;i++){
+    		ArrayList<String> nu = map.get(i);
+    		//traverse nu
+    		if(!nu.contains("A") && !nu.contains("B") && !nu.contains("C")){
+    			count++;
+    		}
+    		if(!nu.contains("H") && !nu.contains("J") && !nu.contains("K")){
+    			count++;
+    		}
+    		if(!nu.contains("E") && !nu.contains("F")){
+    			if((nu.contains("D") && !nu.contains("G")) || (!nu.contains("D") && nu.contains("G")) || (!nu.contains("D") && !nu.contains("G"))){
+    				count++;
+    			}	
+    		}
+    	}
+    	return count;
+    }
+    
+    public static int[] solutionT2(int K, int M, int[] A) {
+    	int N = A.length;
+        int[] count = new int[M+2];        
+        for(int i=0;i<N;i++){
+        	count[A[i]]++;
+        }
+        int[] result;
+        HashSet<Integer> leaders = new HashSet<Integer>();
+        for(int i =0;i<=N-K;i++){
+        	// make copy of count ..O(N*M)
+        	int[] countCopy = new int[count.length];
+        	for(int j = 0;j<count.length;j++){
+        		countCopy[j] = count[j];
+        	}
+        	for(int j = i;j<i+K;j++){
+        		countCopy[A[j]]--;
+        		countCopy[A[j]+1]++;
+        	}
+        	//compute leader from count
+        	int leader = leader(countCopy, N);
+        	if(leader >0){
+        		leaders.add(leader);
+        	}	
+        }
+        if(leaders.size()>0){
+        	ArrayList<Integer> leaderList = new ArrayList<Integer>(leaders);
+        	Collections.sort(leaderList);
+        	result = new int[leaderList.size()];
+        	for(int i=0;i<leaderList.size();i++){
+        		result[i]=leaderList.get(i);
+        	}
+        }else{
+        	result = new int[0];
+        }
+        return result;  
+    }
+    public static int leader(int[] count, int N){
+    	int l = count.length;
+    	for(int i=0;i<l;i++){
+    		if(count[i]>N/2){
+    			return i;
+    		}
+    	}
+    	return -1;
+    }
+    
+    public static String solutionT3(String S) {
+    	if(S.equals("")){
+    		return "null";
+    	}
+    	String err = "error";
+    	String[] ops = S.split(" ");
+    	ArrayList<String> stack = new ArrayList<String>(); // push to the last, pop from the last
+    	for(int i = 0;i<ops.length;i++){
+    		if(ops[i].equals("DUP")){
+    			if(stack.size()==0){
+    				return err;
+    			}else{
+    				stack.add(stack.get(stack.size()-1));
+    			}
+    		} else if(ops[i].equals("POP")){
+    			if(stack.size()==0){
+    				return err;
+    			}else{
+    				stack.remove(stack.size()-1);
+    			}
+    		} else if(ops[i].equals("+")){
+    			if(stack.size()<2){
+    				return err;
+    			}else{
+    				String a = stack.remove(stack.size()-1);
+    				String b = stack.remove(stack.size()-1);
+    				int result = Integer.parseInt(a)+Integer.parseInt(b);
+    				stack.add(Integer.toString(result));
+    			}
+    		} else if(ops[i].equals("-")){
+    			if(stack.size()<2){
+    				return err;
+    			}else{
+    				String a = stack.remove(stack.size()-1);
+    				String b = stack.remove(stack.size()-1);
+    				int result = Integer.parseInt(a)-Integer.parseInt(b);
+    				stack.add(Integer.toString(result));
+    			}
+    		}else{
+    			stack.add(ops[i]);
+    		}
+    	}
+    	if(stack.size()>0){
+    		return stack.get(stack.size()-1);  
+    	}else{
+    		return "null";
+    	}
+    }
     public static void main(String arg[]){
 //    	System.out.println(solution(12));//
 //    	System.out.println(solution(37));
-		int[] A = {1,5,2,1,4,0};
+//		int[] A = {1,5,2,1,4,0};
 //		System.out.println(intersectingDiscs(A));
 //		System.out.println(isPrime(2));
 		
@@ -577,7 +750,7 @@ public class Solution {
 //			System.out.println(i);
 //		}
 		
-//		System.out.println(4%10);//4
+//		System.out.println(-5%2);//4
 		
 //		boolean[] sieve = sieve(25);
 //		for(int i=0;i<sieve.length;i++){
@@ -585,14 +758,42 @@ public class Solution {
 //				System.out.println(i);
 //			}
 //		}
-		int[] P = {1,4,16};
-		int[] Q = {26,10, 20};
-		int[] countSemiprimes = countSemiprimes(26, P, Q);
-		for(int i=0;i<countSemiprimes.length;i++){
-			System.out.println(countSemiprimes[i]);
-		}
+//		int[] P = {1,4,16};
+//		int[] Q = {26,10, 20};
+//		int[] countSemiprimes = countSemiprimes(26, P, Q);
+//		for(int i=0;i<countSemiprimes.length;i++){
+//			System.out.println(countSemiprimes[i]);
+//		}
 		
-		
+//		int[] A = {-1, -2, -3};
+//		System.out.print(demo(A));
+//    	String S = "1A 2F 1C";
+//    	System.out.print(solutionT1(2, S));
+//    	String S = "";
+//    	System.out.print(solutionT1(1, S));
+//    	Integer row = Integer.valueOf("12");
+//    	System.out.print(row);
+    	
+//    	int[] A = {2, 1, 3, 1, 2, 2, 3};
+//    	int[] result = solutionT2(3, 5, A);
+//    	for(int i=0;i<result.length;i++){
+//    		System.out.print(result[i]);
+//    	}
+    	String S = "13 DUP 5 POP 12 DUP 2 +"; //14
+    	String result = solutionT3(S); 
+    	System.out.println(result);
+    	
+    	String S1 = "5 6 + -"; //error
+    	String result1 = solutionT3(S1); 
+    	System.out.println(result1);
+    	
+    	String S2 = ""; //null
+    	String result2 = solutionT3(S2); 
+    	System.out.println(result2);
+    	
+    	String S3 = "3"; //null
+    	String result3 = solutionT3(S3); 
+    	System.out.println(result3);
 		
     }
     
