@@ -631,7 +631,7 @@ public class Solution {
     		if(!nu.contains("A") && !nu.contains("B") && !nu.contains("C")){
     			count++;
     		}
-    		if(!nu.contains("H") && !nu.contains("J") && !nu.contains("K")){
+    		if(!nu.contains("H") && !nu.contains("J") && !nu.contains("K")){ // HIJ?
     			count++;
     		}
     		if(!nu.contains("E") && !nu.contains("F")){
@@ -661,7 +661,7 @@ public class Solution {
         		countCopy[A[j]]--;
         		countCopy[A[j]+1]++;
         	}
-        	//compute leader from count
+        	//compute leader from count ..O(N*M)
         	int leader = leader(countCopy, N);
         	if(leader >0){
         		leaders.add(leader);
@@ -681,12 +681,57 @@ public class Solution {
     }
     public static int leader(int[] count, int N){
     	int l = count.length;
-    	for(int i=0;i<l;i++){
+    	for(int i=0;i<l;i++){ //O(M)
     		if(count[i]>N/2){
     			return i;
     		}
     	}
     	return -1;
+    }
+    public static int[] solutionT2Optimize(int K, int M, int[] A) { // O(N*logN)
+    	// see SolutionT2Test for O(N+M) solution
+    	int N = A.length;
+        int[] count = new int[M+2];
+        int[] result;
+        HashSet<Integer> leaders = new HashSet<Integer>();
+        
+        //count element occurrences in the first new array, as well as the leader
+        for(int i=0;i<K;i++) {
+        	A[i]++;
+        }
+        for(int i=0;i<N;i++){
+        	count[A[i]]++;
+        	if(count[A[i]]> N/2) {
+        		leaders.add(A[i]);
+        	}
+        }
+        
+        for(int i =1;i<=N-K;i++){
+        	// modify count {only the head(before K) and tail(the last of K) of the K elements}
+        	count[A[i-1]+1]--;
+        	count[A[i-1]]++;
+        	count[A[i+K-1]]--;
+        	count[A[i+K-1]+1]++;
+        	
+        	// if there is new leader, it can only come from either head or tail 
+        	if(count[A[i-1]]>N/2) {
+        		leaders.add(A[i-1]);
+        	}
+        	if(count[A[i+K-1]]>N/2) {
+        		leaders.add(A[i+K-1]);
+        	}
+        }
+        if(leaders.size()>0){
+        	result = new int[leaders.size()];
+        	int i=0;
+        	for(int leader : leaders) {
+        		result[i++]=leader;
+        	}
+        	Arrays.sort(result);  // O(N*logN)
+        }else{
+        	result = new int[0];
+        }
+        return result;  
     }
     
     public static String solutionT3(String S) {
@@ -775,25 +820,32 @@ public class Solution {
 //    	System.out.print(row);
     	
 //    	int[] A = {2, 1, 3, 1, 2, 2, 3};
-//    	int[] result = solutionT2(3, 5, A);
+//    	int[] result = solutionT2Optimize(3, 5, A);
 //    	for(int i=0;i<result.length;i++){
 //    		System.out.print(result[i]);
 //    	}
-    	String S = "13 DUP 5 POP 12 DUP 2 +"; //14
-    	String result = solutionT3(S); 
-    	System.out.println(result);
     	
-    	String S1 = "5 6 + -"; //error
-    	String result1 = solutionT3(S1); 
-    	System.out.println(result1);
+    	int[] A = {1, 2, 2, 2, 3, 3, 1, 2, 2};
+    	int[] result = solutionT2Optimize(3, 5, A);
+    	for(int i=0;i<result.length;i++){
+    		System.out.println(result[i]);
+    	}
     	
-    	String S2 = ""; //null
-    	String result2 = solutionT3(S2); 
-    	System.out.println(result2);
-    	
-    	String S3 = "3"; //null
-    	String result3 = solutionT3(S3); 
-    	System.out.println(result3);
+//    	String S = "13 DUP 5 POP 12 DUP 2 +"; //14
+//    	String result = solutionT3(S); 
+//    	System.out.println(result);
+//    	
+//    	String S1 = "5 6 + -"; //error
+//    	String result1 = solutionT3(S1); 
+//    	System.out.println(result1);
+//    	
+//    	String S2 = ""; //null
+//    	String result2 = solutionT3(S2); 
+//    	System.out.println(result2);
+//    	
+//    	String S3 = "3"; //null
+//    	String result3 = solutionT3(S3); 
+//    	System.out.println(result3);
 		
     }
     
