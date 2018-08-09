@@ -1,9 +1,8 @@
 package codilityExercise;
-import java.math.BigInteger;
 import java.util.*;
 
 public class Solution {
-	/* Lession 1: BinaryGap*/
+	/* Lesson 1: BinaryGap*/
     public static int solution(int N) {
         // write your code in Java SE 8
     	
@@ -13,7 +12,6 @@ public class Solution {
         int count = 0;
         int one = 0;
         // try to use bit 
-        int j=0;
         int max = 0;
         
     	for(int i = 0;i<str.length();i++){

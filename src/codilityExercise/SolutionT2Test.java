@@ -3,8 +3,6 @@ package codilityExercise;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 import org.junit.Test;
 
@@ -55,7 +53,7 @@ public class SolutionT2Test {
 	        		result[i]=leaderList.get(i);
 	        	}
 	        }else {
-	        	return result = new int[0];
+	        	result = new int[0];
 	        }
 	        return result;  
 	    }
